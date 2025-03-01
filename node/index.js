@@ -3,7 +3,7 @@ import { checkconnection } from "./connection.js";
 const app = express();
 import routes from "./routes/routes.js";
 app.use(express.json()); //middleware
-app.use("/node", routes);
+app.use("/auth", routes);
 app.listen(3000, async () => {
   console.log("server started at 3000");
   try {

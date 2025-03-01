@@ -1,0 +1,9 @@
+CREATE TABLE `tb_usermaster` (
+  `RecId` int NOT NULL AUTO_INCREMENT,
+  `Name` varchar(45) DEFAULT NULL,
+  `Email` varchar(45) DEFAULT NULL,
+  `Password` varchar(45) DEFAULT NULL,
+  `OTP` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`RecId`),
+  UNIQUE KEY `Email_UNIQUE` (`Email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
