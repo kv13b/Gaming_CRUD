@@ -1,6 +1,7 @@
 import { pool } from "../connection.js";
 import { setUser } from "../auth.js";
 import crypto from "crypto";
+import sendMailer from "./sendmail.js";
 
 function generateOtp() {
   return crypto.randomInt(1000, 10000).toString();
@@ -29,12 +30,17 @@ const getcode = async (req, res) => {
         otp,
         Email,
       ]);
-
+      const message = `Welcome to Cheat Code Your Verification code is ${otp}`;
+      const subject = "Hii from Cheat Code";
       console.log("Verification successful");
-      return res.json({
-        Valid: true,
-        message: "Verification code has been sent to your registered mail ID.",
-      });
+      const sentmail = await sendMailer(Email, subject, message);
+      if (sentmail.success) {
+        return res.json({
+          Valid: true,
+          message:
+            "Verification code has been sent to your registered mail ID.",
+        });
+      }
     } else {
       console.log("Verification failed");
       return res.status(404).json({

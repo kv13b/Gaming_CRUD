@@ -7,12 +7,9 @@ app.use(express.json()); //middleware
 
 app.use(cors());
 app.use("/auth", routes);
-app.get("/auth", (req, res) => {
-  console.log("auth");
-  res.send("ff");
-});
-app.listen(3000, async () => {
-  console.log("server started at 3000");
+const PORT = 3002;
+app.listen(PORT, async () => {
+  console.log(`server started at ${PORT}`);
   try {
     await checkconnection();
   } catch (error) {
