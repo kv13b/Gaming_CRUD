@@ -60,12 +60,12 @@ const Register = async (req, res) => {
   if (!req.body || !req.body.OTP) {
     return res
       .status(400)
-      .json({ success: false, message: "Please enter Verification code" });
+      .json({ Valid: false, message: "Please enter Verification code" });
   }
   if (!req.body || !req.body.Password) {
     return res
       .status(400)
-      .json({ success: false, message: "Please enter Password" });
+      .json({ Valid: false, message: "Please enter Password" });
   }
 
   const { Email, OTP, Password } = req.body;
@@ -86,20 +86,20 @@ const Register = async (req, res) => {
 
       console.log("Registration successful");
       return res.json({
-        success: true,
+        Valid: true,
         message: "Registration successful. Please Sign In.",
       });
     } else {
       console.log("Registration failed");
       return res
         .status(400)
-        .json({ success: false, message: "Invalid Verification code." });
+        .json({ Valid: false, message: "Invalid Verification code." });
     }
   } catch (error) {
     console.error("Error:", error.message);
     return res
       .status(500)
-      .json({ success: false, message: "Internal Server Error" });
+      .json({ Valid: false, message: "Internal Server Error" });
   }
 };
 
@@ -109,7 +109,7 @@ const Login = async (req, res) => {
   if (!Email || !Password) {
     return res
       .status(400)
-      .json({ success: false, message: "All fields are required" });
+      .json({ Valid: false, message: "All fields are required" });
   }
 
   try {
@@ -126,17 +126,17 @@ const Login = async (req, res) => {
 
       return res
         .status(200)
-        .json({ success: true, message: "Login successful", token });
+        .json({ Valid: true, message: "Login successful", token });
     } else {
       return res
         .status(401)
-        .json({ success: false, message: "Invalid email or password" });
+        .json({ Valid: false, message: "Invalid email or password" });
     }
   } catch (error) {
     console.error("Login error:", error);
     return res
       .status(500)
-      .json({ error: true, message: "Internal Server Error" });
+      .json({ Valid: false, message: "Internal Server Error" });
   }
 };
 
@@ -144,12 +144,12 @@ const resetpassword = async (req, res) => {
   if (!req.body || !req.body.OTP) {
     return res
       .status(400)
-      .json({ success: false, message: "Please enter Verification code" });
+      .json({ Valid: false, message: "Please enter Verification code" });
   }
   if (!req.body || !req.body.newPassword) {
     return res
       .status(400)
-      .json({ success: false, message: "Please enter Password" });
+      .json({ Valid: false, message: "Please enter Password" });
   }
 
   const { Email, OTP, newPassword } = req.body;
@@ -164,7 +164,7 @@ const resetpassword = async (req, res) => {
     if (fetchPasswordResult.length === 0) {
       return res
         .status(404)
-        .json({ success: false, message: "Invalid credentials " });
+        .json({ Valid: false, message: "Invalid credentials " });
     }
 
     const existingPassword = fetchPasswordResult[0].password;
@@ -172,7 +172,7 @@ const resetpassword = async (req, res) => {
     // Check if new password is the same as the old password
     if (existingPassword === newPassword) {
       return res.status(400).json({
-        success: false,
+        Valid: false,
         message: "New password must be different from the existing password",
       });
     }
@@ -183,10 +183,10 @@ const resetpassword = async (req, res) => {
       Email,
     ]);
 
-    res.json({ success: true, message: "Password reset successful" });
+    res.json({ Valid: true, message: "Password reset successful" });
   } catch (error) {
     console.error("Error:", error.message);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res.status(500).json({ Valid: false, message: "Internal Server Error" });
   }
 };
 

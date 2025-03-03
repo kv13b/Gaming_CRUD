@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import "../assets/css/style.css";
 import { ToastContainer, toast } from "react-toastify";
 import axiosinstance from "../utils/axiosinstance";
+import { useNavigate } from "react-router-dom";
+
 const SignIn = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [Email, setEmail] = useState("");
   const [OTP, setOTP] = useState("");
   const [Password, setPassword] = useState("");
-
+  const navigate = useNavigate();
   const GetCode = async () => {
     try {
       const response = await axiosinstance.post("auth/GetCode", { Email });
@@ -49,6 +51,7 @@ const SignIn = () => {
         toast(response.data.message);
         setEmail("");
         setPassword("");
+        navigate("/home");
       } else {
         toast(response.data.message);
         setPassword("");
