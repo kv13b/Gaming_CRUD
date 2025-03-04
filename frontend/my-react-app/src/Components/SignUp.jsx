@@ -51,7 +51,7 @@ const SignIn = () => {
         toast(response.data.message);
         setEmail("");
         setPassword("");
-        navigate("/home");
+        navigate("/client");
       } else {
         toast(response.data.message);
         setPassword("");
