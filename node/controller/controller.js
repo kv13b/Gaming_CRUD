@@ -9,7 +9,7 @@ function generateOtp() {
 
 const getcode = async (req, res) => {
   if (!req.body || !req.body.Email) {
-    return res.status(400).json({ Valid: false, message: "Email is required" });
+    return res.json({ Valid: false, message: "Email is required" });
   }
 
   const { Email } = req.body;
@@ -24,11 +24,12 @@ const getcode = async (req, res) => {
     if (results.length > 0) {
       // Email exists, generate OTP
       const otp = generateOtp();
-
+      const currentDatetime = new Date();
       // Update OTP in the database
-      await pool.query("UPDATE TB_UserMaster SET OTP = ? WHERE Email = ?", [
+      await pool.query("UPDATE TB_UserMaster SET OTP = ?,OTP_Datetime=? WHERE Email = ?", [
         otp,
-        Email,
+        currentDatetime,
+        Email        
       ]);
       const message = `Welcome to Cheat Code Your Verification code is ${otp}`;
       const subject = "Hii from Cheat Code";
@@ -43,28 +44,29 @@ const getcode = async (req, res) => {
       }
     } else {
       console.log("Verification failed");
-      return res.status(404).json({
+      return res.json({
         Valid: false,
         message: "Invalid Email ID.",
       });
     }
   } catch (error) {
     console.error("Error:", error.message);
-    return res
-      .status(500)
+    return res 
       .json({ Valid: false, message: "Internal Server Error" });
   }
 };
 
 const Register = async (req, res) => {
+  if (!req.body || !req.body.Email) {
+    return res 
+      .json({ Valid: false, message: "Please enter Email" });
+  }
   if (!req.body || !req.body.OTP) {
-    return res
-      .status(400)
+    return res 
       .json({ Valid: false, message: "Please enter Verification code" });
   }
   if (!req.body || !req.body.Password) {
-    return res
-      .status(400)
+    return res 
       .json({ Valid: false, message: "Please enter Password" });
   }
 
@@ -91,14 +93,12 @@ const Register = async (req, res) => {
       });
     } else {
       console.log("Registration failed");
-      return res
-        .status(400)
+      return res 
         .json({ Valid: false, message: "Invalid Verification code." });
     }
   } catch (error) {
     console.error("Error:", error.message);
-    return res
-      .status(500)
+    return res 
       .json({ Valid: false, message: "Internal Server Error" });
   }
 };
@@ -108,7 +108,6 @@ const Login = async (req, res) => {
 
   if (!Email || !Password) {
     return res
-      .status(400)
       .json({ Valid: false, message: "All fields are required" });
   }
 
@@ -124,31 +123,26 @@ const Login = async (req, res) => {
       const token = setUser(RecId, Email);
       res.cookie("uid", token, { httpOnly: true });
 
-      return res
-        .status(200)
+      return res 
         .json({ Valid: true, message: "Login successful", token });
     } else {
-      return res
-        .status(401)
+      return res 
         .json({ Valid: false, message: "Invalid email or password" });
     }
   } catch (error) {
     console.error("Login error:", error);
-    return res
-      .status(500)
+    return res 
       .json({ Valid: false, message: "Internal Server Error" });
   }
 };
 
 const resetpassword = async (req, res) => {
   if (!req.body || !req.body.OTP) {
-    return res
-      .status(400)
+    return res 
       .json({ Valid: false, message: "Please enter Verification code" });
   }
   if (!req.body || !req.body.newPassword) {
-    return res
-      .status(400)
+    return res 
       .json({ Valid: false, message: "Please enter Password" });
   }
 
@@ -162,8 +156,7 @@ const resetpassword = async (req, res) => {
     );
 
     if (fetchPasswordResult.length === 0) {
-      return res
-        .status(404)
+      return res 
         .json({ Valid: false, message: "Invalid credentials " });
     }
 
@@ -186,7 +179,7 @@ const resetpassword = async (req, res) => {
     res.json({ Valid: true, message: "Password reset successful" });
   } catch (error) {
     console.error("Error:", error.message);
-    res.status(500).json({ Valid: false, message: "Internal Server Error" });
+    res.json({ Valid: false, message: "Internal Server Error" });
   }
 };
 

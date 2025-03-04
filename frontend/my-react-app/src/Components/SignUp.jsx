@@ -11,13 +11,18 @@ const SignIn = () => {
   const [OTP, setOTP] = useState("");
   const [Password, setPassword] = useState("");
   const navigate = useNavigate();
+
   const GetCode = async () => {
     try {
       const response = await axiosinstance.post("auth/GetCode", { Email });
-      toast(response.data.message);
+      if (response.data.Valid) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
     } catch (error) {
       console.error("Error:", error);
-      toast("Network error! Check your connection.");
+      toast.error("Network error! Check your connection.");
     }
   };
 
@@ -29,15 +34,16 @@ const SignIn = () => {
         Password: Password,
       });
       if (response.data.Valid) {
-        toast(response.data.message);
+        toast.success(response.data.message);
         setEmail("");
         setOTP("");
         setPassword("");
       } else {
-        toast(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error("Error:", error);
+      toast.error(error);
     }
   };
 
@@ -48,12 +54,12 @@ const SignIn = () => {
         Password: Password,
       });
       if (response.data.Valid) {
-        toast(response.data.message);
+        toast.success(response.data.message);
         setEmail("");
         setPassword("");
         navigate("/client");
       } else {
-        toast(response.data.message);
+        toast.error(response.data.message);
         setPassword("");
       }
     } catch (error) {
@@ -136,7 +142,7 @@ const SignIn = () => {
                             setIsForgotPassword(true);
                             setIsSignIn(false);
                           }}
-                          style={{ color: "#ce1212", border: "none" }}
+                          style={{ color: "#ce1212", border: "none",background: "white" }}
                         >
                           Forgot Password ?
                         </button>
@@ -180,14 +186,14 @@ const SignIn = () => {
                       <div className="w-25 text-md-right">
                         <button
                           type="button"
-                          className="btn btn-white btn-outline-white"
+                          className="form-control btn btn-primary submit px-3"
                           style={{
-                            background: "#ce1212",
+                            // background: "#ce1212",
                             padding: "10px 10px",
                           }}
                           onClick={GetCode}
                         >
-                          Get Code
+                          Submit
                         </button>
                       </div>
                     </div>
@@ -235,7 +241,7 @@ const SignIn = () => {
                       <div className="w-50 text-md-right">
                         <button
                           type="button"
-                          style={{ color: "#ce1212", border: "none" }}
+                          style={{ color: "#ce1212", border: "none" ,background: "white"}}
                           onClick={() => {
                             setIsForgotPassword(false);
                             setIsSignIn(true);
@@ -290,14 +296,13 @@ const SignIn = () => {
                       <div className="w-30 text-md-right">
                         <button
                           type="button"
-                          className="btn btn-white btn-outline-white"
+                          className="form-control btn btn-primary submit px-3"
                           style={{
-                            background: "#ce1212",
                             padding: "10px 10px",
                           }}
                           onClick={GetCode}
                         >
-                          Get Code
+                          Submit
                         </button>
                       </div>
                     </div>
