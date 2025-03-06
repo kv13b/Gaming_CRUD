@@ -1,12 +1,18 @@
 CREATE TABLE `tb_usermaster` (
   `RecId` int NOT NULL AUTO_INCREMENT,
+  `CompanyId` int DEFAULT NULL,               //from frontend
+  `UserId` int DEFAULT NULL,                  //from frontend
   `Name` varchar(45) DEFAULT NULL,
   `Email` varchar(45) DEFAULT NULL,
+  `MobileNumber` varchar(45) DEFAULT NULL,    //from frontend?
   `Password` varchar(45) DEFAULT NULL,
   `OTP` varchar(45) DEFAULT NULL,
+  `OTP_DateTime` datetime DEFAULT NULL,       //on register
+  `BlockStatus` int DEFAULT NULL,             //from frontend
+  `AppVersion` varchar(45) DEFAULT NULL,      //from frontend
   PRIMARY KEY (`RecId`),
   UNIQUE KEY `Email_UNIQUE` (`Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 CREATE TABLE `client_master` (
   `Customer_Id` bigint NOT NULL AUTO_INCREMENT,
@@ -15,6 +21,7 @@ CREATE TABLE `client_master` (
   `ContactNo` varchar(100) NOT NULL,
   `Email` varchar(50) NOT NULL,
   `UserId` int NOT NULL,
+  `CompanyId` int DEFAULT NULL,
   `Entry_Date` datetime NOT NULL,
   `recordstatus` bigint DEFAULT NULL,
   PRIMARY KEY (`Customer_Id`)

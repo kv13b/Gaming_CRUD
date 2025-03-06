@@ -26,11 +26,10 @@ const getcode = async (req, res) => {
       const otp = generateOtp();
       const currentDatetime = new Date();
       // Update OTP in the database
-      await pool.query("UPDATE TB_UserMaster SET OTP = ?,OTP_Datetime=? WHERE Email = ?", [
-        otp,
-        currentDatetime,
-        Email        
-      ]);
+      await pool.query(
+        "UPDATE TB_UserMaster SET OTP = ?,OTP_Datetime=? WHERE Email = ?",
+        [otp, currentDatetime, Email]
+      );
       const message = `Welcome to Cheat Code Your Verification code is ${otp}`;
       const subject = "Hii from Cheat Code";
       console.log("Verification successful");
@@ -51,23 +50,22 @@ const getcode = async (req, res) => {
     }
   } catch (error) {
     console.error("Error:", error.message);
-    return res 
-      .json({ Valid: false, message: "Internal Server Error" });
+    return res.json({ Valid: false, message: "Internal Server Error" });
   }
 };
 
 const Register = async (req, res) => {
   if (!req.body || !req.body.Email) {
-    return res 
-      .json({ Valid: false, message: "Please enter Email" });
+    return res.json({ Valid: false, message: "Please enter Email" });
   }
   if (!req.body || !req.body.OTP) {
-    return res 
-      .json({ Valid: false, message: "Please enter Verification code" });
+    return res.json({
+      Valid: false,
+      message: "Please enter Verification code",
+    });
   }
   if (!req.body || !req.body.Password) {
-    return res 
-      .json({ Valid: false, message: "Please enter Password" });
+    return res.json({ Valid: false, message: "Please enter Password" });
   }
 
   const { Email, OTP, Password } = req.body;
@@ -82,7 +80,7 @@ const Register = async (req, res) => {
     if (results.length > 0) {
       // Email & OTP matched, update Password
       await pool.query(
-        "UPDATE TB_UserMaster SET Password = ? WHERE Email = ? AND OTP = ?",
+        "UPDATE TB_UserMaster SET Password = ? ,OTP_DateTime = NOW()WHERE Email = ? AND OTP = ? ",
         [Password, Email, OTP]
       );
 
@@ -93,13 +91,11 @@ const Register = async (req, res) => {
       });
     } else {
       console.log("Registration failed");
-      return res 
-        .json({ Valid: false, message: "Invalid Verification code." });
+      return res.json({ Valid: false, message: "Invalid Verification code." });
     }
   } catch (error) {
     console.error("Error:", error.message);
-    return res 
-      .json({ Valid: false, message: "Internal Server Error" });
+    return res.json({ Valid: false, message: "Internal Server Error" });
   }
 };
 
@@ -107,8 +103,7 @@ const Login = async (req, res) => {
   const { Email, Password } = req.body;
 
   if (!Email || !Password) {
-    return res
-      .json({ Valid: false, message: "All fields are required" });
+    return res.json({ Valid: false, message: "All fields are required" });
   }
 
   try {
@@ -123,27 +118,25 @@ const Login = async (req, res) => {
       const token = setUser(RecId, Email);
       res.cookie("uid", token, { httpOnly: true });
 
-      return res 
-        .json({ Valid: true, message: "Login successful", token });
+      return res.json({ Valid: true, message: "Login successful", token });
     } else {
-      return res 
-        .json({ Valid: false, message: "Invalid email or password" });
+      return res.json({ Valid: false, message: "Invalid email or password" });
     }
   } catch (error) {
     console.error("Login error:", error);
-    return res 
-      .json({ Valid: false, message: "Internal Server Error" });
+    return res.json({ Valid: false, message: "Internal Server Error" });
   }
 };
 
 const resetpassword = async (req, res) => {
   if (!req.body || !req.body.OTP) {
-    return res 
-      .json({ Valid: false, message: "Please enter Verification code" });
+    return res.json({
+      Valid: false,
+      message: "Please enter Verification code",
+    });
   }
   if (!req.body || !req.body.newPassword) {
-    return res 
-      .json({ Valid: false, message: "Please enter Password" });
+    return res.json({ Valid: false, message: "Please enter Password" });
   }
 
   const { Email, OTP, newPassword } = req.body;
@@ -156,8 +149,7 @@ const resetpassword = async (req, res) => {
     );
 
     if (fetchPasswordResult.length === 0) {
-      return res 
-        .json({ Valid: false, message: "Invalid credentials " });
+      return res.json({ Valid: false, message: "Invalid credentials " });
     }
 
     const existingPassword = fetchPasswordResult[0].password;
